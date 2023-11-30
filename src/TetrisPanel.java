@@ -1,24 +1,33 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.ImageObserver;
 import java.util.Random;
+import java.awt.image.BufferedImage;
 
-public class TetrisPanel extends JPanel{
-    private Image[] blocks;
+public class TetrisPanel extends JPanel {
+    private Image[][] blocks;
     private Image currentBlock;
     private int xCoord;
     private int yCoord;
     private Dimension preferredSize;
-
+    int randnum,q;
     private boolean dirXRight = true;
     private boolean dirYDown = true;
     TetrisPanel(){
-        this.blocks = new Image[7];
-        for(int i=0;i<7;i++) this.blocks[i] = new ImageIcon("Sources/block"+(i+1)+".png").getImage();
+        this.blocks = new Image[7][4];
+        for(int j=0;j<4;j++){
+            for(int i=0;i<7;i++){
+                this.blocks[i][j] = new ImageIcon("Sources/block"+(i+1)+"."+j+".png").getImage();
+            }
+        }
+
 
         Random rand = new Random();
-        int i = rand.nextInt(6);
-        this.currentBlock = blocks[i];
+        randnum = rand.nextInt(7);
+        System.out.println(randnum);
+        q=0;
+        this.currentBlock = blocks[randnum][0];
         this.xCoord = 150;
         this.yCoord = 0;
         this.preferredSize = new Dimension(400,800);
@@ -33,7 +42,9 @@ public class TetrisPanel extends JPanel{
         repaint();
     }
     public void up() {
-        yCoord -= 5;
+        q++;
+        q%=4;
+        currentBlock = blocks[randnum][q];
         repaint();
     }
     public void down() {
@@ -49,7 +60,8 @@ public class TetrisPanel extends JPanel{
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-
+        System.out.println("risuvam "+randnum+" "+q+" na "+xCoord+" "+yCoord);
+        //graphics.drawImage(blocks[4*randnum+q], xCoord, yCoord, this);
         graphics.drawImage(currentBlock, xCoord, yCoord, this);
     }
     public int getxCoord() {
@@ -77,9 +89,9 @@ public class TetrisPanel extends JPanel{
         int radius = 5;
         int x=0;
         int y=0;
-
         while(true) {
             down();
+            if(xCoord>800) break;
         /*if(xCoord+25>width)
             dirXRight=false;
         else
@@ -100,7 +112,8 @@ public class TetrisPanel extends JPanel{
             down();
         else
             up();
-*/
+
+         */
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e){
